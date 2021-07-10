@@ -1,7 +1,6 @@
-#pragma once
-#include <iostream>
-using namespace std;
-
-namespace ariel{
-    string snowman(int num);
-};
+#include <stdexcept>
+#include <string>
+namespace ariel
+{
+    std::string snowman(int in);
+}

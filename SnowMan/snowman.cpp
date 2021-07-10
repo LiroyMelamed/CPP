@@ -1,54 +1,68 @@
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
+#include <cstring>
+#include <exception>
+#include <string>
+#include <cassert>
+#include <stdexcept>
+#include <array>
 #include "snowman.hpp"
+using namespace std;
+const int head = 0;
+const int nose = 1;
+const int left_eye = 2;
+const int right_eye = 3;
+const int left_arm = 4;
+const int right_arm = 5;
+const int torso = 6;
+const int bot = 7;
 
 namespace ariel{
-    string snowman(int num){
-        string number = to_string(num);
 
-        const std::array<string,4> hats {"_===_"," ___\n.....","  _\n /_\\"," ___\n(_*_)"};
-        const std::array<string,4> nose {",",".","_"," "};
-        const std::array<string,4> eyes {".","o","O","-"};
-        const std::array<string,4> leftArm {"<","\\","/",""};
-        const std::array<string,4> rightArm {">","/","\\",""};
-        const std::array<string,4> belly {" : ","] [","> <","   "};
-        const std::array<string,4> base {" : ","\" \"","___","   "};
-
-        if(number.length() != 8)throw invalid_argument("Illegal Input!");
-        if(num<11111111 || num>44444444)throw std::out_of_range("Not in range!");
-        for (int i = number.length(); i >= 0; i--){
-            if (number[i]>4 || number[i]<1) throw invalid_argument("Illegal Input!");
+    string snowman(int in)
+    {
+        /*Checks if the number is in our range */
+        if (in > 44444444 || in < 11111111){
+            throw std::out_of_range("Not in Range");
+        }
+        /*New array that will store the input*/
+        array<int, 8> arr = {0};
+        /*We make a loop to get the last number each time*/
+        for (int i = 0; i < 8; i++){
+            int temp = in % 10;
+            /* Checks if the last number is between 1 to 4 and then we put it in the end of the array */
+            if (temp < 1 || temp > 4){
+                throw std::out_of_range("Invalid Input");
             }
+            arr.at(7 - i) = temp;
+            in = in / 10;
+        }
+        
+        //HHHHH
+        //HHHHH
+        //XU(LNR)YU
+        //XD(TTT)YD
+        //(BBB)
 
-        const int H = 0; //Hat
-        const int N = 1; //Nose
-        const int L = 2; //Left eye
-        const int R = 3; //Right eye
-        const int X = 4; //Left arm
-        const int Y = 5; //Right arm
-        const int T = 6; //Torso
-        const int B = 7; //Base
-        string snowman="";
-        snowman.insert(hats[number[H]);
-        snowman.insert("\n");
-        snowman.insert(leftArm[number[X]]);
-        snowman.insert("(");
-        snowman.insert(eyes[number[L]);
-        snowman.insert(nose[number[N]);
-        snowman.insert(eyes[number[R]);
-        snowman.insert(")");
-        snowman.insert(rightArm[number[Y]]);
-        snowman.insert("\n");
-        snowman.insert(leftArm[number[X]]);
-        snowman.insert("(");
-        snowman.insert(belly[number[T]]);
-        snowman.insert(")");
-        snowman.insert(rightArm[number[Y]]);
-        snowman.insert(Base[number[B]]);
-
-        return snowman;
-
-
-
+        const array<string, 5> H = {"", "      \n _===_", " ___ \n .....", "   _  \n  /_\\", "  ___  \n (_*_)"};
+        const array<string, 5> N = {"", ",", ".", "_", " "};
+        const array<string, 5> L = {"", ".", "o", "O", "-"};
+        const array<string, 5> R = {"", ".", "o", "O", "-"};
+        const array<string, 5> XU = {"", " ", "\\", " ", " "};
+        const array<string, 5> XD = {"", "<", "", "/", " "};
+        const array<string, 5> YU = {"", " ", "/", "", " "};
+        const array<string, 5> YD = {"", ">", " ", "\\", " "};
+        const array<string, 5> T = {"", " : ", "] [", "> <", "   "};
+        const array<string, 5> B = {"", " : ", "\" \"", "___", "   "};
+        /* Building the snowman with the array of our input and the arrays of our clothes */
+        string top = H.at(arr.at(head));
+        string up = XU.at(arr.at(left_arm)) + "(" + L.at(arr.at(left_eye)) + N.at(arr.at(nose)) + R.at(arr.at(right_eye)) + ")" + YU.at(arr.at(right_arm));
+        string down = XD.at(arr.at(left_arm)) + "(" + T.at(arr.at(torso)) + ")" + YD.at(arr.at(right_arm));
+        string buttom = " (" + B.at(arr.at(bot)) + ")";
+        string out = top + "\n" + up + "\n" + down + "\n" + buttom;
+        return out;
     }
+};
+int main(){
+    std::cout << ariel::snowman(11111111) << endl;
 }
